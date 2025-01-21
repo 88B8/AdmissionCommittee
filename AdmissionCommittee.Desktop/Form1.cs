@@ -33,6 +33,7 @@ namespace AdmissionCommittee.Desktop
 
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = entrantBindingSource;
+            UpdateDataAndStats();
         }
 
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -64,8 +65,6 @@ namespace AdmissionCommittee.Desktop
             {
                 e.Value = entrant.MathExamScore + entrant.RusExamScore + entrant.ITExamScore;
             }
-
-            CalculateStatsAndUpdate();
         }
 
         private void toolStripAdd_Click(object sender, EventArgs e)
@@ -74,7 +73,7 @@ namespace AdmissionCommittee.Desktop
             if (inputForm.ShowDialog() == DialogResult.OK)
             {
                 entrants.Add(inputForm.Entrant);
-                entrantBindingSource.ResetBindings(false);
+                UpdateDataAndStats();
             }
         }
 
@@ -93,7 +92,7 @@ namespace AdmissionCommittee.Desktop
                     entrant.MathExamScore = inputForm.Entrant.MathExamScore;
                     entrant.RusExamScore = inputForm.Entrant.RusExamScore;
                     entrant.ITExamScore = inputForm.Entrant.ITExamScore;
-                    entrantBindingSource.ResetBindings(false);
+                    UpdateDataAndStats();
                 }
             }
         }
@@ -113,14 +112,15 @@ namespace AdmissionCommittee.Desktop
                     if (target != null)
                     {
                         entrants.Remove(target);
-                        entrantBindingSource.ResetBindings(false);
+                        UpdateDataAndStats();
                     }
                 }
             }
         }
 
-        private void CalculateStatsAndUpdate()
+        private void UpdateDataAndStats()
         {
+            entrantBindingSource.ResetBindings(false);
             entrantsCount.Text = $"Количество студентов: {entrants.Count}";
             entrantsPassed.Text = $"Набрали больше 150 баллов: {entrants.Count(e => e.MathExamScore + e.RusExamScore + e.ITExamScore > 150)}";
         }
