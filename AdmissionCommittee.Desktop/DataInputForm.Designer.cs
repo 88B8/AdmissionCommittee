@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             textBoxName = new TextBox();
             dateBirthday = new DateTimePicker();
             buttonOk = new Button();
@@ -47,10 +48,12 @@
             numericIT = new NumericUpDown();
             comboBoxEducationForm = new ComboBox();
             label9 = new Label();
+            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericMath).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericRussian).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericIT).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
             // textBoxName
@@ -59,7 +62,6 @@
             textBoxName.Name = "textBoxName";
             textBoxName.Size = new Size(302, 23);
             textBoxName.TabIndex = 0;
-            textBoxName.TextChanged += textBoxName_TextChanged;
             // 
             // dateBirthday
             // 
@@ -67,7 +69,6 @@
             dateBirthday.Name = "dateBirthday";
             dateBirthday.Size = new Size(301, 23);
             dateBirthday.TabIndex = 2;
-            dateBirthday.ValueChanged += dateBirthday_ValueChanged;
             // 
             // buttonOk
             // 
@@ -175,7 +176,6 @@
             comboBoxGender.Name = "comboBoxGender";
             comboBoxGender.Size = new Size(302, 23);
             comboBoxGender.TabIndex = 17;
-            comboBoxGender.SelectedIndexChanged += comboBoxGender_SelectedIndexChanged;
             // 
             // label8
             // 
@@ -192,7 +192,6 @@
             numericMath.Name = "numericMath";
             numericMath.Size = new Size(302, 23);
             numericMath.TabIndex = 19;
-            numericMath.ValueChanged += numericMath_ValueChanged;
             // 
             // numericRussian
             // 
@@ -200,7 +199,6 @@
             numericRussian.Name = "numericRussian";
             numericRussian.Size = new Size(302, 23);
             numericRussian.TabIndex = 20;
-            numericRussian.ValueChanged += numericRussian_ValueChanged;
             // 
             // numericIT
             // 
@@ -208,7 +206,6 @@
             numericIT.Name = "numericIT";
             numericIT.Size = new Size(302, 23);
             numericIT.TabIndex = 21;
-            numericIT.ValueChanged += numericIT_ValueChanged;
             // 
             // comboBoxEducationForm
             // 
@@ -219,7 +216,6 @@
             comboBoxEducationForm.Name = "comboBoxEducationForm";
             comboBoxEducationForm.Size = new Size(302, 23);
             comboBoxEducationForm.TabIndex = 22;
-            comboBoxEducationForm.SelectedIndexChanged += comboBoxEducationForm_SelectedIndexChanged;
             // 
             // label9
             // 
@@ -229,6 +225,10 @@
             label9.Size = new Size(101, 15);
             label9.TabIndex = 23;
             label9.Text = "Форма обучения";
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
             // 
             // DataInputForm
             // 
@@ -267,6 +267,7 @@
             ((System.ComponentModel.ISupportInitialize)numericMath).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericRussian).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericIT).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -292,5 +293,6 @@
         private NumericUpDown numericIT;
         private ComboBox comboBoxEducationForm;
         private Label label9;
+        private ErrorProvider errorProvider1;
     }
 }

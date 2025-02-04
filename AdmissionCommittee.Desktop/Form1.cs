@@ -21,7 +21,7 @@ namespace AdmissionCommittee.Desktop
                 Id = Guid.NewGuid(),
                 Name = "Петров Петр Петрович",
                 Gender = Gender.Male,
-                Birthday = DateOnly.FromDateTime(DateTime.Now.AddYears(-16)),
+                Birthday = DateTime.Now.AddYears(-16),
                 EducationForm = EducationForm.Fulltime,
                 MathExamScore = 78,
                 RusExamScore = 14,
