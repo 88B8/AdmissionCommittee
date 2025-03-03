@@ -211,7 +211,6 @@
             // 
             comboBoxEducationForm.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxEducationForm.FormattingEnabled = true;
-            comboBoxEducationForm.Items.AddRange(new object[] { "Очная", "Очно-заочная", "Заочная" });
             comboBoxEducationForm.Location = new Point(181, 222);
             comboBoxEducationForm.Name = "comboBoxEducationForm";
             comboBoxEducationForm.Size = new Size(302, 23);

@@ -1,4 +1,5 @@
-﻿using AdmissionCommittee.Desktop.Models;
+﻿using AdmissionCommittee.BL;
+using AdmissionCommittee.BL.Models;
 
 namespace AdmissionCommittee.Desktop
 {
@@ -22,14 +23,15 @@ namespace AdmissionCommittee.Desktop
                 : source.Clone();
 
             comboBoxGender.DataSource = Enum.GetValues(typeof(Gender));
+            comboBoxEducationForm.DataSource = Enum.GetValues(typeof(EducationForm));
 
             textBoxName.AddBindings(x => x.Text, Entrant, x => x.Name, errorProvider1);
-            comboBoxGender.AddBindings(x => x.SelectedItem, Entrant, x => x.Gender);
+            comboBoxGender.AddBindings(x => x.SelectedItem, Entrant, x => x.Gender, errorProvider1);
             dateBirthday.AddBindings(x => x.Value, Entrant, x => x.Birthday, errorProvider1);
-            comboBoxEducationForm.AddBindings(x => x.SelectedItem, Entrant, x => x.EducationForm);
-            numericMath.AddBindings(x => x.Value, Entrant, x => x.MathExamScore);
-            numericRussian.AddBindings(x => x.Value, Entrant, x => x.RusExamScore);
-            numericIT.AddBindings(x => x.Value, Entrant, x => x.ITExamScore);
+            comboBoxEducationForm.AddBindings(x => x.SelectedItem, Entrant, x => x.EducationForm, errorProvider1);
+            numericMath.AddBindings(x => x.Value, Entrant, x => x.MathExamScore, errorProvider1);
+            numericRussian.AddBindings(x => x.Value, Entrant, x => x.RusExamScore, errorProvider1);
+            numericIT.AddBindings(x => x.Value, Entrant, x => x.ITExamScore, errorProvider1);
         }
 
         public Entrant Entrant { get; }

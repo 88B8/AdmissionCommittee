@@ -1,13 +1,14 @@
-using AdmissionCommittee.Desktop.Models;
+using AdmissionCommittee.BL;
+using AdmissionCommittee.BL.Models;
 
 namespace AdmissionCommittee.Desktop
 {
     /// <summary>
-    /// Модель главной формы
+    /// РњРѕРґРµР»СЊ РіР»Р°РІРЅРѕР№ С„РѕСЂРјС‹
     /// </summary>
     public partial class Form1 : Form
     {
-        private readonly List<Entrant> entrants = new List<Entrant>();
+        private readonly EntrantManager entrantManager;
         private readonly BindingSource entrantBindingSource;
 
         /// <summary>
@@ -16,24 +17,10 @@ namespace AdmissionCommittee.Desktop
         public Form1()
         {
             InitializeComponent();
-            entrants.Add(new Entrant
-            {
-                Id = Guid.NewGuid(),
-                Name = "Петров Петр Петрович",
-                Gender = Gender.Male,
-                Birthday = DateTime.Now.AddYears(-16),
-                EducationForm = EducationForm.Fulltime,
-                MathExamScore = 78,
-                RusExamScore = 14,
-                ITExamScore = 88,
-            });
-
+            entrantManager = new EntrantManager();
             entrantBindingSource = new BindingSource();
-            entrantBindingSource.DataSource = entrants;
-
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = entrantBindingSource;
-            UpdateDataAndStats();
         }
 
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -47,17 +34,17 @@ namespace AdmissionCommittee.Desktop
             if (dataGridView1.Columns[e.ColumnIndex].Name == GenderColumn.Name)
             {
                 e.Value = entrant.Gender == Gender.Male
-                    ? "Мужской"
-                    : "Женский";
+                    ? "РњСѓР¶СЃРєРѕР№"
+                    : "Р–РµРЅСЃРєРёР№";
             }
 
             if (dataGridView1.Columns[e.ColumnIndex].Name == EducationFormColumn.Name)
             {
                 e.Value = entrant.EducationForm switch
                 {
-                    EducationForm.Fulltime => "Очная",
-                    EducationForm.Parttime => "Очно-заочная",
-                    _ => "Заочная",
+                    EducationForm.Fulltime => "РћС‡РЅР°СЏ",
+                    EducationForm.Parttime => "РћС‡РЅРѕ-Р·Р°РѕС‡РЅР°СЏ",
+                    _ => "Р—Р°РѕС‡РЅР°СЏ",
                 };
             }
 
@@ -67,17 +54,40 @@ namespace AdmissionCommittee.Desktop
             }
         }
 
-        private void toolStripAdd_Click(object sender, EventArgs e)
+        private async void toolStripAdd_Click(object sender, EventArgs e)
         {
             var inputForm = new DataInputForm();
             if (inputForm.ShowDialog() == DialogResult.OK)
             {
-                entrants.Add(inputForm.Entrant);
-                UpdateDataAndStats();
+                await entrantManager.Add(new EntrantRequest(inputForm.Entrant.Name,
+                    inputForm.Entrant.Gender,
+                    inputForm.Entrant.Birthday,
+                    inputForm.Entrant.EducationForm,
+                    inputForm.Entrant.MathExamScore,
+                    inputForm.Entrant.RusExamScore,
+                    inputForm.Entrant.ITExamScore), CancellationToken.None);
+                await UpdateDataAndStats(CancellationToken.None);
             }
         }
 
-        private void toolStripEdit_Click(object sender, EventArgs e)
+        private async void toolStripDelete_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count > 0 &&
+                dataGridView1.SelectedRows[0].DataBoundItem is Entrant entrant)
+            {
+
+                if (MessageBox.Show($"Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ СѓРґР°Р»РёС‚СЊ Р°Р±РёС‚СѓСЂРёРµРЅС‚Р° '{entrant.Name}'?",
+                    "РЈРґР°Р»РµРЅРёРµ Р°Р±РёС‚СѓСЂРёРµРЅС‚Р°",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    await entrantManager.Delete(entrant.Id, CancellationToken.None);
+                    await UpdateDataAndStats(CancellationToken.None);
+                }
+            }
+        }
+
+        private async void toolStripEdit_Click(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedRows.Count > 0 &&
                 dataGridView1.SelectedRows[0].DataBoundItem is Entrant entrant)
@@ -85,44 +95,30 @@ namespace AdmissionCommittee.Desktop
                 var inputForm = new DataInputForm(entrant);
                 if (inputForm.ShowDialog() == DialogResult.OK)
                 {
-                    entrant.Name = inputForm.Entrant.Name;
-                    entrant.Gender = inputForm.Entrant.Gender;
-                    entrant.Birthday = inputForm.Entrant.Birthday;
-                    entrant.EducationForm = inputForm.Entrant.EducationForm;
-                    entrant.MathExamScore = inputForm.Entrant.MathExamScore;
-                    entrant.RusExamScore = inputForm.Entrant.RusExamScore;
-                    entrant.ITExamScore = inputForm.Entrant.ITExamScore;
-                    UpdateDataAndStats();
+                    await entrantManager.Edit(inputForm.Entrant.Id, new EntrantRequest(inputForm.Entrant.Name,
+                        inputForm.Entrant.Gender,
+                        inputForm.Entrant.Birthday,
+                        inputForm.Entrant.EducationForm,
+                        inputForm.Entrant.MathExamScore,
+                        inputForm.Entrant.RusExamScore,
+                        inputForm.Entrant.ITExamScore), CancellationToken.None);
+                    await UpdateDataAndStats(CancellationToken.None);
                 }
             }
         }
 
-        private void toolStripDelete_Click(object sender, EventArgs e)
+        private async Task UpdateDataAndStats(CancellationToken cancellationToken)
         {
-            if (dataGridView1.SelectedRows.Count > 0 &&
-                dataGridView1.SelectedRows[0].DataBoundItem is Entrant entrant)
-            {
-
-                if (MessageBox.Show($"Вы действительно хотите удалить абитуриента '{entrant.Name}'?",
-                    "Удаление студента",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    var target = entrants.FirstOrDefault(x => x.Id == entrant.Id);
-                    if (target != null)
-                    {
-                        entrants.Remove(target);
-                        UpdateDataAndStats();
-                    }
-                }
-            }
-        }
-
-        private void UpdateDataAndStats()
-        {
+            var result = await entrantManager.GetEntrantStatistics(cancellationToken);
+            entrantsCount.Text = $"РљРѕР»РёС‡РµСЃС‚РІРѕ Р°Р±РёС‚СѓСЂРёРµРЅС‚РѕРІ: {result.EntrantsCount}";
+            entrantsPassed.Text = $"РќР°Р±СЂР°Р»Рё Р±РѕР»СЊС€Рµ 150 Р±Р°Р»Р»РѕРІ: {result.EntrantsPassedCount}";
+            entrantBindingSource.DataSource = await entrantManager.GetEntrants(CancellationToken.None);
             entrantBindingSource.ResetBindings(false);
-            entrantsCount.Text = $"Количество студентов: {entrants.Count}";
-            entrantsPassed.Text = $"Набрали больше 150 баллов: {entrants.Count(e => e.MathExamScore + e.RusExamScore + e.ITExamScore > 150)}";
+        }
+
+        private async void Form1_Load(object sender, EventArgs e)
+        {
+            await UpdateDataAndStats(CancellationToken.None);
         }
     }
 }

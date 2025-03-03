@@ -204,6 +204,7 @@
             Controls.Add(toolStrip1);
             Name = "Form1";
             Text = "Приёмная комиссия";
+            Load += Form1_Load;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             statusStrip1.ResumeLayout(false);

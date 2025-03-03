@@ -1,4 +1,4 @@
-﻿namespace AdmissionCommittee.Desktop.Models
+﻿namespace AdmissionCommittee.BL.Models
 {
     /// <summary>
     /// Пол абитуриента
