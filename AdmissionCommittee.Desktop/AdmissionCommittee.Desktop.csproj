@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AdmissionComittee.Storage.InMemory\AdmissionCommittee.Storage.InMemory.csproj" />
     <ProjectReference Include="..\AdmissionCommittee.BL\AdmissionCommittee.BL.csproj" />
   </ItemGroup>
 

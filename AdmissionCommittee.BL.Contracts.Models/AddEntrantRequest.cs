@@ -1,4 +1,4 @@
-﻿namespace AdmissionCommittee.BL.Models
+﻿namespace AdmissionCommittee.BL.Contracts.Models
 {
     /// <summary>
     /// Запрос на добавление студента

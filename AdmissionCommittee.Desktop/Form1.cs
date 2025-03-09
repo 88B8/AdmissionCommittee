@@ -1,5 +1,5 @@
-using AdmissionCommittee.BL;
-using AdmissionCommittee.BL.Models;
+using AdmissionCommittee.BL.Contracts;
+using AdmissionCommittee.BL.Contracts.Models;
 
 namespace AdmissionCommittee.Desktop
 {
@@ -8,16 +8,16 @@ namespace AdmissionCommittee.Desktop
     /// </summary>
     public partial class Form1 : Form
     {
-        private readonly EntrantManager entrantManager;
+        private readonly IEntrantManager entrantManager;
         private readonly BindingSource entrantBindingSource;
 
         /// <summary>
         /// ctor
         /// </summary>
-        public Form1()
+        public Form1(IEntrantManager entrantManager)
         {
             InitializeComponent();
-            entrantManager = new EntrantManager();
+            this.entrantManager = entrantManager;
             entrantBindingSource = new BindingSource();
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = entrantBindingSource;

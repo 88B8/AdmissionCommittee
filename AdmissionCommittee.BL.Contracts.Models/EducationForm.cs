@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace AdmissionCommittee.BL
+namespace AdmissionCommittee.BL.Contracts.Models
 {
     /// <summary>
     /// Форма обучения абитуриента

@@ -1,5 +1,4 @@
-﻿using AdmissionCommittee.BL;
-using AdmissionCommittee.BL.Models;
+﻿using AdmissionCommittee.BL.Contracts.Models;
 
 namespace AdmissionCommittee.Desktop
 {

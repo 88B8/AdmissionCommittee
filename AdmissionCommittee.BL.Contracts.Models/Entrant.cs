@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AdmissionCommittee.BL.Models
+namespace AdmissionCommittee.BL.Contracts.Models
 {
     /// <summary>
     /// Модель студента

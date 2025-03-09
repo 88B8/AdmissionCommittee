@@ -1,47 +1,27 @@
-﻿using System.Collections.ObjectModel;
-using AdmissionCommittee.BL.Models;
+﻿using AdmissionCommittee.BL.Contracts;
+using AdmissionCommittee.BL.Contracts.Models;
+using AdmissionCommittee.Storage.Contracts;
 
 namespace AdmissionCommittee.BL
 {
-    /// <summary>
-    /// Менеджер по управлению <see cref="Entrant"/>
-    /// </summary>
+    /// <inheritdoc cref="IEntrantManager"/>
 
-    public class EntrantManager
+    public class EntrantManager : IEntrantManager
     {
-        private readonly List<Entrant> entrants;
+        private readonly IStorage<Entrant> storage;
 
         /// <summary>
         /// Инициализирует новый экземпляр <see cref="EntrantManager"/>
         /// </summary>
-        public EntrantManager()
+        public EntrantManager(IStorage<Entrant> storage)
         {
-            entrants =
-            [
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Петров Петр Петрович",
-                    Gender = Gender.Male,
-                    Birthday = DateTime.Now.AddYears(-16),
-                    EducationForm = EducationForm.Fulltime,
-                    MathExamScore = 78,
-                    RusExamScore = 14,
-                    ITExamScore = 88,
-                }
-            ];
+            this.storage = storage;
         }
 
-        /// <summary>
-        /// Возвращает список <see cref="Entrant">
-        /// </summary>
-        public Task<IReadOnlyCollection<Entrant>> GetEntrants(CancellationToken cancellationToken) 
-            => Task.FromResult((IReadOnlyCollection<Entrant>)new ReadOnlyCollection<Entrant>(entrants));
+        Task<IReadOnlyCollection<Entrant>> IEntrantManager.GetEntrants(CancellationToken cancellationToken)
+            => storage.GetAll(cancellationToken);
 
-        /// <summary>
-        /// Добавляет нового абитуриента
-        /// </summary>
-        public Task<Entrant> Add(EntrantRequest request, CancellationToken cancellationToken)
+        Task<Entrant> IEntrantManager.Add(EntrantRequest request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
             Validate(request);
@@ -58,14 +38,11 @@ namespace AdmissionCommittee.BL
                 ITExamScore = request.ITExamScore,
             };
 
-            entrants.Add(item);
+            storage.Add(item, cancellationToken);
             return Task.FromResult(item);
         }
 
-        /// <summary>
-        /// Редактирует абитуриента с указанным идентификатором
-        /// </summary>
-        public async Task<Entrant> Edit(Guid id, EntrantRequest request, CancellationToken cancellationToken)
+        async Task<Entrant> IEntrantManager.Edit(Guid id, EntrantRequest request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
             Validate(request);
@@ -79,39 +56,39 @@ namespace AdmissionCommittee.BL
             item.RusExamScore = request.RusExamScore;
             item.ITExamScore = request.ITExamScore;
 
+            await storage.Edit(id, item, cancellationToken);
+
             return item;
         }
 
-        /// <summary>
-        /// Удаляет абитуриента по идентификатору
-        /// </summary>
-        public async Task Delete(Guid id, CancellationToken cancellationToken)
+        async Task IEntrantManager.Delete(Guid id, CancellationToken cancellationToken)
         {
             var item = await GetEntrantOrThrowIfNull(id, cancellationToken);
-            entrants.Remove(item);
+            await storage.Delete(item.Id, cancellationToken);
         }
 
         /// <summary>
         /// Возвращает статистику <see cref="EntrantStatistics"
         /// </summary>
-        public Task<EntrantStatistics> GetEntrantStatistics(CancellationToken cancellationToken)
+        public async Task<EntrantStatistics> GetEntrantStatistics(CancellationToken cancellationToken)
         {
-            var count = entrants.Count();
-            var passedCount = entrants.Count(x => x.MathExamScore + x.RusExamScore + x.ITExamScore > 150);
+            var items = await storage.GetAll(cancellationToken);
+            var count = items.Count();
+            var passedCount = items.Count(x => x.MathExamScore + x.RusExamScore + x.ITExamScore > 150);
 
-            return Task.FromResult(new EntrantStatistics(count, passedCount));
+            return new EntrantStatistics(count, passedCount);
         }
 
-        private Task<Entrant> GetEntrantOrThrowIfNull(Guid id, CancellationToken cancellationToken)
+        private async Task<Entrant> GetEntrantOrThrowIfNull(Guid id, CancellationToken cancellationToken)
         {
-            var item = entrants.FirstOrDefault(x => x.Id == id);
+            var item = await storage.Get(id, cancellationToken);
 
             if (item == null)
             {
                 throw new InvalidOperationException($"Не удалось найти абитуриента с идентификатором {id}");
             }
 
-            return Task.FromResult(item);
+            return item;
         }
 
         private static void Validate(EntrantRequest request)
