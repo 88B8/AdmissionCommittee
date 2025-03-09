@@ -21,7 +21,7 @@ namespace AdmissionCommittee.BL
         Task<IReadOnlyCollection<Entrant>> IEntrantManager.GetEntrants(CancellationToken cancellationToken)
             => storage.GetAll(cancellationToken);
 
-        Task<Entrant> IEntrantManager.Add(EntrantRequest request, CancellationToken cancellationToken)
+        async Task<Entrant> IEntrantManager.Add(EntrantRequest request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
             Validate(request);
@@ -38,8 +38,9 @@ namespace AdmissionCommittee.BL
                 ITExamScore = request.ITExamScore,
             };
 
-            storage.Add(item, cancellationToken);
-            return Task.FromResult(item);
+            await storage.Add(item, cancellationToken);
+
+            return item;
         }
 
         async Task<Entrant> IEntrantManager.Edit(Guid id, EntrantRequest request, CancellationToken cancellationToken)
