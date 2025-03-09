@@ -18,8 +18,8 @@ namespace AdmissionCommittee.BL
             this.storage = storage;
         }
 
-        Task<IReadOnlyCollection<Entrant>> IEntrantManager.GetEntrants(CancellationToken cancellationToken)
-            => storage.GetAll(cancellationToken);
+        async Task<IReadOnlyCollection<Entrant>> IEntrantManager.GetEntrants(CancellationToken cancellationToken)
+            => await storage.GetAll(cancellationToken);
 
         async Task<Entrant> IEntrantManager.Add(EntrantRequest request, CancellationToken cancellationToken)
         {
