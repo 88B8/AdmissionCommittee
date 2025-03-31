@@ -1,6 +1,8 @@
-﻿using AdmissionCommittee.BL.Contracts;
+﻿using Microsoft.Extensions.Logging;
+using AdmissionCommittee.BL.Contracts;
 using AdmissionCommittee.BL.Contracts.Models;
 using AdmissionCommittee.Storage.Contracts;
+using System.Diagnostics;
 
 namespace AdmissionCommittee.BL
 {
@@ -9,13 +11,15 @@ namespace AdmissionCommittee.BL
     public class EntrantManager : IEntrantManager
     {
         private readonly IStorage<Entrant> storage;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Инициализирует новый экземпляр <see cref="EntrantManager"/>
         /// </summary>
-        public EntrantManager(IStorage<Entrant> storage)
+        public EntrantManager(IStorage<Entrant> storage, ILogger logger)
         {
             this.storage = storage;
+            this.logger = logger;
         }
 
         async Task<IReadOnlyCollection<Entrant>> IEntrantManager.GetEntrants(CancellationToken cancellationToken)
@@ -26,6 +30,7 @@ namespace AdmissionCommittee.BL
             ArgumentNullException.ThrowIfNull(request);
             Validate(request);
 
+            var stopwatch = Stopwatch.StartNew();
             var item = new Entrant
             {
                 Id = Guid.NewGuid(),
@@ -39,7 +44,9 @@ namespace AdmissionCommittee.BL
             };
 
             await storage.Add(item, cancellationToken);
+            stopwatch.Stop();
 
+            logger.LogInformation("Добавлен новый абитуриент с идентификатором {EntrantId}: {@Entrant}. Время выполнения: {ElapsedMilliseconds}мс", item.Id, item, stopwatch.ElapsedMilliseconds);
             return item;
         }
 
@@ -47,6 +54,7 @@ namespace AdmissionCommittee.BL
         {
             ArgumentNullException.ThrowIfNull(request);
             Validate(request);
+            var stopwatch = Stopwatch.StartNew();
             var item = await GetEntrantOrThrowIfNull(id, cancellationToken);
 
             item.Name = request.Name;
@@ -58,14 +66,20 @@ namespace AdmissionCommittee.BL
             item.ITExamScore = request.ITExamScore;
 
             await storage.Edit(id, item, cancellationToken);
+            stopwatch.Stop();
 
+            logger.LogInformation("Изменен абитуриент с идентификатором {EntrantId}: {@Entrant}. Время выполнения: {ElapsedMilliseconds}мс", item.Id, item, stopwatch.ElapsedMilliseconds);
             return item;
         }
 
         async Task IEntrantManager.Delete(Guid id, CancellationToken cancellationToken)
         {
+            var stopwatch = Stopwatch.StartNew();
             var item = await GetEntrantOrThrowIfNull(id, cancellationToken);
             await storage.Delete(item.Id, cancellationToken);
+            stopwatch.Stop();
+
+            logger.LogInformation("Удален абитуриент с идентификатором {EntrantId}: {@Entrant}. Время выполнения: {ElapsedMilliseconds}мс", item.Id, item, stopwatch.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -73,9 +87,13 @@ namespace AdmissionCommittee.BL
         /// </summary>
         public async Task<EntrantStatistics> GetEntrantStatistics(CancellationToken cancellationToken)
         {
+            var stopwatch = Stopwatch.StartNew();
             var items = await storage.GetAll(cancellationToken);
             var count = items.Count();
             var passedCount = items.Count(x => x.MathExamScore + x.RusExamScore + x.ITExamScore > 150);
+            stopwatch.Stop();
+
+            logger.LogInformation("Создана статистика абитуриентов. Общее кол-во: {Total}, Прошедших порог: {Passed}, Время выполнения: {ElapsedMilliseconds}мс", count, passedCount, stopwatch.ElapsedMilliseconds);
 
             return new EntrantStatistics(count, passedCount);
         }
@@ -86,6 +104,7 @@ namespace AdmissionCommittee.BL
 
             if (item == null)
             {
+                logger.LogWarning("Не удалось найти абитуриента с идентификатором {EntrantId}", id);
                 throw new InvalidOperationException($"Не удалось найти абитуриента с идентификатором {id}");
             }
 

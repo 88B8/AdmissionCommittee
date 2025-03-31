@@ -4,6 +4,7 @@ using AdmissionCommittee.BL.Contracts.Models;
 using AdmissionCommittee.Storage.Contracts;
 using Xunit;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 
 namespace AdmissionCommittee.BL.Tests
 {
@@ -14,6 +15,7 @@ namespace AdmissionCommittee.BL.Tests
     {
         private readonly IEntrantManager entrantManager;
         private readonly Mock<IStorage<Entrant>> storageMock;
+        private readonly Mock<ILogger> loggerMock;
         
         /// <summary>
         /// ctor
@@ -21,7 +23,9 @@ namespace AdmissionCommittee.BL.Tests
         public EntrantManagerTests()
         {
             storageMock = new Mock<IStorage<Entrant>>();
-            entrantManager = new EntrantManager(storageMock.Object);
+            loggerMock = new Mock<ILogger>();
+
+            entrantManager = new EntrantManager(storageMock.Object, loggerMock.Object);
         }
 
         /// <summary>
