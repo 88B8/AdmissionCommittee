@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdmissionComittee.Storage.InMemory\AdmissionCommittee.Storage.InMemory.csproj" />
     <ProjectReference Include="..\AdmissionCommittee.BL\AdmissionCommittee.BL.csproj" />
+    <ProjectReference Include="..\AdmissionCommittee.Sql\AdmissionCommittee.Storage.Sql.csproj" />
   </ItemGroup>
 
   <ItemGroup>

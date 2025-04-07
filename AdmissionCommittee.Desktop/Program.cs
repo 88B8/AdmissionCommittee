@@ -1,7 +1,8 @@
 using AdmissionCommittee.BL;
-using AdmissionComittee.Storage.InMemory;
 using Serilog;
 using Serilog.Extensions.Logging;
+using AdmissionCommittee.Storage.Sql;
+using System.Configuration;
 
 namespace AdmissionCommittee.Desktop
 {
@@ -26,7 +27,9 @@ namespace AdmissionCommittee.Desktop
             var microsoftLogger = new SerilogLoggerFactory(logger)
                 .CreateLogger(nameof(Program));
 
-            var storage = new EntrantInMemoryStorage();
+            var connectionString = ConfigurationManager.ConnectionStrings["AdmissionCommitteeConnectionString"]?.ConnectionString;
+
+            var storage = new AdmissionCommitteeStorage(connectionString);
             var manager = new EntrantManager(storage, microsoftLogger);
 
             Application.Run(new Form1(manager));
