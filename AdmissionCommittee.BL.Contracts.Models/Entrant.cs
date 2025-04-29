@@ -15,36 +15,43 @@ namespace AdmissionCommittee.BL.Contracts.Models
         /// <summary>
         /// ФИО
         /// </summary>
+        [Display(Name = "ФИО")]
         [Required(ErrorMessage = "ФИО должно быть обязательно!")]
         [StringLength(250, MinimumLength = 3)]
         public string Name { get; set; }
 
         /// <inheritdoc cref="Models.Gender"/>
+        [Display(Name = "Пол")]
         public Gender Gender { get; set; }
 
         /// <summary>
         /// Дата рождения
         /// </summary>
+        [Display(Name = "Дата рождения")]
         [Required(ErrorMessage = "Дата рождения должна быть обязательно!")]
-        [AgeValidation(16, ErrorMessage = "Возраст должен быть больше 16 лет!")]
+        [AgeValidation(16, 100, ErrorMessage = "Возраст введен некорректно!")]
         public DateTime Birthday { get; set; }
 
         /// <inheritdoc cref="Models.EducationForm"/>
+        [Display(Name = "Форма обучения")]
         public EducationForm EducationForm { get; set; }
 
         /// <summary>
         /// Баллы ЕГЭ по математике
         /// </summary>
+        [Display(Name = "Баллы по математике")]
         public decimal MathExamScore { get; set; }
 
         /// <summary>
         /// Баллы ЕГЭ по русскому
         /// </summary>
+        [Display(Name = "Баллы по русскому языку")]
         public decimal RusExamScore { get; set; }
 
         /// <summary>
         /// Баллы ЕГЭ по информатике
         /// </summary>
+        [Display(Name = "Баллы по информатике")]
         public decimal ITExamScore { get; set; }
 
         /// <summary>

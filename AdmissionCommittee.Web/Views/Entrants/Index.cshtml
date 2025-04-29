@@ -1,0 +1,57 @@
+﻿@model IReadOnlyCollection<AdmissionCommittee.BL.Contracts.Models.Entrant>
+
+@{
+    ViewBag.Title = "Список абитуриентов";
+
+    var totalEntrants = Model.Count;
+
+    var passedEntrants = Model.Count(x => x.MathExamScore + x.RusExamScore + x.ITExamScore > 150);
+}
+
+<h1>Список абитуриентов</h1>
+
+<p>
+    <a class="btn btn-primary" href="@Url.Action("Add", "Entrants")">Добавить абитуриента</a>
+</p>
+
+<strong>Общее количество абитуриентов:</strong> @totalEntrants<br />
+<strong>Количество абитуриентов с суммой баллов больше 150:</strong> @passedEntrants
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Пол</th>
+            <th>Дата рождения</th>
+            <th>Форма обучения</th>
+            <th>Математика</th>
+            <th>Русский</th>
+            <th>Информатика</th>
+            <th>Сумма баллов</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            for (var i = 0; i < totalEntrants; i++)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(model => model.ElementAt(i).Name)</td>
+                    <td>@Html.DisplayFor(model => model.ElementAt(i).Gender)</td>
+                    <td>@Html.DisplayFor(model => model.ElementAt(i).Birthday)</td>
+                    <td>@Html.DisplayFor(model => model.ElementAt(i).EducationForm)</td>
+                    <td>@Html.DisplayFor(model => model.ElementAt(i).ITExamScore)</td>
+                    <td>@Html.DisplayFor(model => model.ElementAt(i).MathExamScore)</td>
+                    <td>@Html.DisplayFor(model => model.ElementAt(i).RusExamScore)</td>
+                    <td>@Model.ElementAt(i).MathExamScore + Model.ElementAt(i).RusExamScore + Model.ElementAt(i).ITExamScore</td>
+                <td>
+                    <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", "Entrants", new { id = Model.ElementAt(i).Id })">Редактировать</a>
+                        <form asp-action="Delete" asp-route-id="@Model.ElementAt(i).Id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            }
+        }
+    </tbody>
+</table>

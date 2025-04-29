@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdmissionCommittee.BL.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdmissionCommittee.Storage.Sql", "AdmissionCommittee.Sql\AdmissionCommittee.Storage.Sql.csproj", "{C22DD582-8D48-4145-B6E3-AAE57AC72DCB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdmissionCommittee.Web", "AdmissionCommittee.Web\AdmissionCommittee.Web.csproj", "{E4A392A7-FE18-4B37-8F34-046980A1228B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{C22DD582-8D48-4145-B6E3-AAE57AC72DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C22DD582-8D48-4145-B6E3-AAE57AC72DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C22DD582-8D48-4145-B6E3-AAE57AC72DCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4A392A7-FE18-4B37-8F34-046980A1228B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4A392A7-FE18-4B37-8F34-046980A1228B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4A392A7-FE18-4B37-8F34-046980A1228B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4A392A7-FE18-4B37-8F34-046980A1228B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

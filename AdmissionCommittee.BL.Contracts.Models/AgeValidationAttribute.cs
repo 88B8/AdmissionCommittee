@@ -5,12 +5,17 @@ namespace AdmissionCommittee.BL.Contracts.Models
     /// <summary>
     /// Модель атрибута, проверяющего минимальный возраст
     /// </summary>
-    public class AgeValidationAttribute(int age) : ValidationAttribute
+    public class AgeValidationAttribute(int minAge, int maxAge) : ValidationAttribute
     {
         /// <summary>
         /// Минимальный возраст
         /// </summary>
-        public int MinAge { get; set; } = age;
+        public int MinAge { get; set; } = minAge;
+
+        /// <summary>
+        /// Максимальный возраст
+        /// </summary>
+        public int MaxAge { get; set; } = maxAge;
 
         public override bool IsValid(object? value)
         {
@@ -24,7 +29,7 @@ namespace AdmissionCommittee.BL.Contracts.Models
                 age--;
             }
 
-            return age >= MinAge;
+            return age >= MinAge && age<= MaxAge;
         }
     }
 }

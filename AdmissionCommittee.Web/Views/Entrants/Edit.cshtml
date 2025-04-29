@@ -1,0 +1,64 @@
+﻿@using AdmissionCommittee.BL.Contracts.Models
+@model AdmissionCommittee.BL.Contracts.Models.Entrant
+
+@{
+    ViewBag.Title = "Редактировать абитуриента";
+}
+
+<h1>Редактировать абитуриента</h1>
+
+<div class="row justify-content-center">
+    <form method="post" class="col-auto justify-content-end" style="text-align: center">
+        <input type="text" asp-for="Id" readonly hidden />
+
+        <p>
+            @Html.LabelFor(model => model.Name)
+            @Html.EditorFor(model => model.Name)<br />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </p>
+
+        <p>
+            @Html.LabelFor(model => model.Birthday)
+            <input type="date" asp-for="Birthday" /><br />
+            <span asp-validation-for="Birthday" class="text-danger"></span>
+        </p>
+
+        <p>
+            @Html.LabelFor(model => model.Gender)
+            @Html.DropDownListFor(model => model.Gender, Html.GetEnumSelectList<Gender>())
+            <span asp-validation-for="Gender" class="text-danger"></span>
+        </p>
+
+        <p>
+            @Html.LabelFor(model => model.EducationForm)
+            @Html.DropDownListFor(model => model.EducationForm, Html.GetEnumSelectList<EducationForm>())
+            <span asp-validation-for="EducationForm" class="text-danger"></span>
+        </p>
+
+        <p>
+            @Html.LabelFor(model => model.ITExamScore)
+            @Html.EditorFor(model => model.ITExamScore)<br />
+            <span asp-validation-for="ITExamScore" class="text-danger"></span>
+        </p>
+
+        <p>
+            @Html.LabelFor(model => model.MathExamScore)
+            @Html.EditorFor(model => model.MathExamScore)<br />
+            <span asp-validation-for="MathExamScore" class="text-danger"></span>
+        </p>
+
+        <p>
+            @Html.LabelFor(model => model.RusExamScore)
+            @Html.EditorFor(model => model.RusExamScore)<br />
+            <span asp-validation-for="RusExamScore" class="text-danger"></span>
+        </p>
+
+        <p>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </p>
+    </form>
+</div>
+
+<div>
+    <a href="@Url.Action("Index", "Entrants")">Назад к списку</a>
+</div>
