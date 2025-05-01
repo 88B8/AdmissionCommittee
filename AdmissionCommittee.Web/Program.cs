@@ -4,7 +4,6 @@ using AdmissionCommittee.BL.Contracts.Models;
 using AdmissionCommittee.BL.Contracts;
 using AdmissionCommittee.BL;
 using Serilog;
-using Serilog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,14 +15,10 @@ var logger = new LoggerConfiguration()
     .CreateLogger();
 Log.Logger = logger;
 
-var microsoftLogger = new SerilogLoggerFactory(logger)
-    .CreateLogger(nameof(Program));
+builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
 
-builder.Services.AddScoped<IStorage<Entrant>>(provider =>
-    new AdmissionCommitteeStorage(connectionString));
-
-builder.Services.AddScoped<IEntrantManager>(provider =>
-    new EntrantManager(provider.GetRequiredService<IStorage<Entrant>>(), microsoftLogger));
+builder.Services.AddScoped<IStorage<Entrant>, AdmissionCommitteeStorage>();
+builder.Services.AddScoped<IEntrantManager, EntrantManager>();
 
 builder.Services.AddControllersWithViews();
 
