@@ -17,7 +17,9 @@ Log.Logger = logger;
 
 builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
 
-builder.Services.AddScoped<IStorage<Entrant>, AdmissionCommitteeStorage>();
+builder.Services.AddScoped<IStorage<Entrant>>(provider =>
+    new AdmissionCommitteeStorage(connectionString));
+
 builder.Services.AddScoped<IEntrantManager, EntrantManager>();
 
 builder.Services.AddControllersWithViews();

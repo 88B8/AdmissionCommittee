@@ -11,12 +11,12 @@ namespace AdmissionCommittee.BL
     public class EntrantManager : IEntrantManager
     {
         private readonly IStorage<Entrant> storage;
-        private readonly ILogger logger;
+        private readonly ILogger<EntrantManager> logger;
 
         /// <summary>
         /// Инициализирует новый экземпляр <see cref="EntrantManager"/>
         /// </summary>
-        public EntrantManager(IStorage<Entrant> storage, ILogger logger)
+        public EntrantManager(IStorage<Entrant> storage, ILogger<EntrantManager> logger)
         {
             this.storage = storage;
             this.logger = logger;

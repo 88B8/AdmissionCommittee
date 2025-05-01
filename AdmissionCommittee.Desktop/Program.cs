@@ -3,6 +3,7 @@ using Serilog;
 using Serilog.Extensions.Logging;
 using AdmissionCommittee.Storage.Sql;
 using System.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AdmissionCommittee.Desktop
 {
@@ -24,13 +25,13 @@ namespace AdmissionCommittee.Desktop
                 .CreateLogger();
             Log.Logger = logger;
 
-            var microsoftLogger = new SerilogLoggerFactory(logger)
-                .CreateLogger(nameof(Program));
+            var microsoftLoggerFactory = new SerilogLoggerFactory(logger);
+            var entrantManagerLogger = microsoftLoggerFactory.CreateLogger<EntrantManager>();
 
             var connectionString = ConfigurationManager.ConnectionStrings["AdmissionCommitteeConnectionString"]?.ConnectionString;
 
             var storage = new AdmissionCommitteeStorage(connectionString);
-            var manager = new EntrantManager(storage, microsoftLogger);
+            var manager = new EntrantManager(storage, entrantManagerLogger);
 
             Application.Run(new Form1(manager));
         }

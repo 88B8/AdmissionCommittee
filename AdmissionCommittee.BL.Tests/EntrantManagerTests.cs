@@ -15,7 +15,7 @@ namespace AdmissionCommittee.BL.Tests
     {
         private readonly IEntrantManager entrantManager;
         private readonly Mock<IStorage<Entrant>> storageMock;
-        private readonly Mock<ILogger> loggerMock;
+        private readonly Mock<ILogger<EntrantManager>> loggerMock;
         
         /// <summary>
         /// ctor
@@ -23,7 +23,7 @@ namespace AdmissionCommittee.BL.Tests
         public EntrantManagerTests()
         {
             storageMock = new Mock<IStorage<Entrant>>();
-            loggerMock = new Mock<ILogger>();
+            loggerMock = new Mock<ILogger<EntrantManager>>();
 
             entrantManager = new EntrantManager(storageMock.Object, loggerMock.Object);
         }
