@@ -13,6 +13,11 @@ namespace AdmissionCommittee.BL.Contracts
         Task<IReadOnlyCollection<Entrant>> GetEntrants(CancellationToken cancellationToken);
 
         /// <summary>
+        /// Возвращает сущность <see cref="Entrant"/> по id или выбрасывает null
+        /// </summary>
+        Task<Entrant> GetEntrantOrThrowIfNull(Guid id, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Добавляет нового абитуриента
         /// </summary>
         Task<Entrant> Add(EntrantRequest request, CancellationToken cancellationToken);

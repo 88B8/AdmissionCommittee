@@ -39,18 +39,21 @@ namespace AdmissionCommittee.BL.Contracts.Models
         /// <summary>
         /// Баллы ЕГЭ по математике
         /// </summary>
+        [Range(0, 100, ErrorMessage = "Баллы должны быть в диапазоне от 0 до 100")]
         [Display(Name = "Баллы по математике")]
         public decimal MathExamScore { get; set; }
 
         /// <summary>
         /// Баллы ЕГЭ по русскому
         /// </summary>
+        [Range(0, 100, ErrorMessage = "Баллы должны быть в диапазоне от 0 до 100")]
         [Display(Name = "Баллы по русскому языку")]
         public decimal RusExamScore { get; set; }
 
         /// <summary>
         /// Баллы ЕГЭ по информатике
         /// </summary>
+        [Range(0, 100, ErrorMessage = "Баллы должны быть в диапазоне от 0 до 100")]
         [Display(Name = "Баллы по информатике")]
         public decimal ITExamScore { get; set; }
 

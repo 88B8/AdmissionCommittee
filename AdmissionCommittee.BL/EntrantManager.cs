@@ -82,6 +82,19 @@ namespace AdmissionCommittee.BL
             logger.LogInformation("Удален абитуриент с идентификатором {EntrantId}: {@Entrant}. Время выполнения: {ElapsedMilliseconds}мс", item.Id, item, stopwatch.ElapsedMilliseconds);
         }
 
+        public async Task<Entrant> GetEntrantOrThrowIfNull(Guid id, CancellationToken cancellationToken)
+        {
+            var item = await storage.Get(id, cancellationToken);
+
+            if (item == null)
+            {
+                logger.LogWarning("Не удалось найти абитуриента с идентификатором {EntrantId}", id);
+                throw new InvalidOperationException($"Не удалось найти абитуриента с идентификатором {id}");
+            }
+
+            return item;
+        }
+
         /// <summary>
         /// Возвращает статистику <see cref="EntrantStatistics"
         /// </summary>
@@ -96,19 +109,6 @@ namespace AdmissionCommittee.BL
             logger.LogInformation("Создана статистика абитуриентов. Общее кол-во: {Total}, Прошедших порог: {Passed}, Время выполнения: {ElapsedMilliseconds}мс", count, passedCount, stopwatch.ElapsedMilliseconds);
 
             return new EntrantStatistics(count, passedCount);
-        }
-
-        private async Task<Entrant> GetEntrantOrThrowIfNull(Guid id, CancellationToken cancellationToken)
-        {
-            var item = await storage.Get(id, cancellationToken);
-
-            if (item == null)
-            {
-                logger.LogWarning("Не удалось найти абитуриента с идентификатором {EntrantId}", id);
-                throw new InvalidOperationException($"Не удалось найти абитуриента с идентификатором {id}");
-            }
-
-            return item;
         }
 
         private static void Validate(EntrantRequest request)

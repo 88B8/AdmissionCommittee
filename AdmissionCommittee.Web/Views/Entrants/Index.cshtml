@@ -1,21 +1,18 @@
-﻿@model IReadOnlyCollection<AdmissionCommittee.BL.Contracts.Models.Entrant>
+﻿@model AdmissionCommittee.Web.Models.EntrantsViewModel
 
 @{
     ViewBag.Title = "Список абитуриентов";
-
-    var totalEntrants = Model.Count;
-    var passedEntrants = Model.Count(x => x.MathExamScore + x.RusExamScore + x.ITExamScore > 150);
 }
 
 <h1>Список абитуриентов</h1>
 
 <p>
-    <a class="btn btn-primary" href="@Url.Action("Add", "Entrants")">Добавить абитуриента</a>
+    <a asp-action="Edit" class="btn btn-success">Добавить абитуриента</a>
 </p>
 
-<strong>Общее количество абитуриентов:</strong> @totalEntrants
+<strong>Общее количество абитуриентов:</strong> @Model.Stats.EntrantsCount
 <br />
-<strong>Количество абитуриентов с суммой баллов больше 150:</strong> @passedEntrants
+<strong>Количество абитуриентов с суммой баллов больше 150:</strong> @Model.Stats.EntrantsPassedCount
 
 <table class="table table-striped">
     <thead>
@@ -32,7 +29,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var entrant in Model)
+        @foreach (var entrant in Model.Entrants)
         {
             <tr>
                 <td>@Html.DisplayFor(_ => entrant.Name)</td>

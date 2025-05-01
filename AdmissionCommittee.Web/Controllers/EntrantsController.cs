@@ -2,23 +2,23 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using AdmissionCommittee.Web.Models;
 using AdmissionCommittee.BL.Contracts.Models;
-using AdmissionCommittee.Storage.Contracts;
+using AdmissionCommittee.BL.Contracts;
 
 namespace AdmissionCommittee.Web.Controllers
 {
     /// <summary>
-    /// Контроллер <see cref="Entrant"/>
+    /// Контроллер для работы с абитуриентами
     /// </summary>
     public class EntrantsController : Controller
     {
-        private readonly IStorage<Entrant> storage;
+        private readonly IEntrantManager entrantManager;
 
         /// <summary>
         /// ctor
         /// </summary>
-        public EntrantsController(IStorage<Entrant> storage)
+        public EntrantsController(IEntrantManager entrantManager)
         {
-            this.storage = storage;
+            this.entrantManager = entrantManager;
         }
 
         /// <summary>
@@ -26,42 +26,30 @@ namespace AdmissionCommittee.Web.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            var entrants = await storage.GetAll(CancellationToken.None);
-            return View(entrants);
+            var entrants = await entrantManager.GetEntrants(CancellationToken.None);
+            var stats = await entrantManager.GetEntrantStatistics(CancellationToken.None);
+
+            var viewModel = new EntrantsViewModel
+            {
+                Entrants = entrants,
+                Stats = stats,
+            };
+
+            return View(viewModel);
         }
 
         /// <summary>
-        /// Отображает форму добавления
+        /// Отображает форму для добавления и редактирования
         /// </summary>
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> Edit(Guid? id)
         {
-            return View(new Entrant());
-        }
-
-        /// <summary>
-        /// Обрабатывает добавление
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> Add(Entrant entrant)
-        {
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                entrant.Id = Guid.NewGuid();
-                await storage.Add(entrant, CancellationToken.None);
-                return RedirectToAction(nameof(Index));
+                return View(new Entrant());
             }
 
-            return View(entrant);
-        }
-
-        /// <summary>
-        /// Отображает форму для редактирования
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
-        {
-            var entrant = await storage.Get(id, CancellationToken.None);
+            var entrant = await entrantManager.GetEntrantOrThrowIfNull(id.Value, CancellationToken.None);
             if (entrant == null)
             {
                 return NotFound();
@@ -71,15 +59,40 @@ namespace AdmissionCommittee.Web.Controllers
         }
 
         /// <summary>
-        /// Обрабатывает форму для редактирования
+        /// Обрабатывает форму для добавления и редактирования
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> Edit(Entrant entrant)
         {
             if (ModelState.IsValid)
             {
-                await storage.Edit(entrant.Id, entrant, CancellationToken.None);
-                return RedirectToAction(nameof(Index));
+                if (entrant.Id == Guid.Empty)
+                {
+                    await entrantManager.Add(new EntrantRequest(
+                        entrant.Name,
+                        entrant.Gender,
+                        entrant.Birthday,
+                        entrant.EducationForm,
+                        entrant.MathExamScore,
+                        entrant.ITExamScore,
+                        entrant.RusExamScore),
+                        CancellationToken.None);
+                }
+                else
+                {
+                    await entrantManager.Edit(entrant.Id,
+                        new EntrantRequest(
+                        entrant.Name,
+                        entrant.Gender,
+                        entrant.Birthday,
+                        entrant.EducationForm,
+                        entrant.MathExamScore,
+                        entrant.ITExamScore,
+                        entrant.RusExamScore),
+                        CancellationToken.None);
+                }
+
+                return RedirectToAction("Index");
             }
 
             return View(entrant);
@@ -91,7 +104,7 @@ namespace AdmissionCommittee.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await storage.Delete(id, CancellationToken.None);
+            await entrantManager.Delete(id, CancellationToken.None);
             return RedirectToAction(nameof(Index));
         }
 
